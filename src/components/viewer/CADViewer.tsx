@@ -8,6 +8,7 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Loader2 } from "lucide-react";
 import { DefectMarker } from "./DefectMarker";
 import { ViewerControls } from "./ViewerControls";
+import { motion } from "framer-motion";
 
 interface CADViewerProps {
   glbUrl: string | null;
@@ -127,7 +128,12 @@ export function CADViewer({ glbUrl, defects, onModelLoaded, focusTarget }: CADVi
   };
 
   return (
-    <div className="relative w-full h-[600px] bg-[#0d0d14] rounded-xl overflow-hidden border border-zinc-800 shadow-xl">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="relative w-full h-full bg-[#0d0d14] rounded-xl overflow-hidden border border-zinc-800 shadow-xl"
+    >
       <Canvas
         camera={{ position: [0, 0, 500], fov: 45 }}
         gl={{ antialias: true }}
@@ -184,6 +190,6 @@ export function CADViewer({ glbUrl, defects, onModelLoaded, focusTarget }: CADVi
         onResetCamera={handleResetCamera}
         onFocusDefects={defects.length > 0 ? handleFocusDefects : undefined}
       />
-    </div>
+    </motion.div>
   );
 }

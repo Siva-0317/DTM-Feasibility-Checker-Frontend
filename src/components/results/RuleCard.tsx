@@ -3,6 +3,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ArrowRight, AlertTriangle } from "lucide-react";
 import { cn, formatMeasurement, getStatusColor, getSeverityColor } from "../../lib/utils";
+import { motion } from "framer-motion";
 
 interface RuleCardProps {
   rule: DTMRuleResult;
@@ -14,12 +15,14 @@ export function RuleCard({ rule, onFocusDefect, index }: RuleCardProps) {
   const isFail = rule.status === "FAIL";
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.4 }}
       className={cn(
-        "flex flex-col p-5 rounded-xl border bg-card hover:border-zinc-500 transition-all duration-300 animate-in slide-in-from-right-8 fade-in",
+        "flex flex-col p-5 rounded-xl border bg-card hover:border-zinc-500 transition-colors",
         rule.status === "PASS" ? "border-zinc-800" : isFail ? "border-red-900/50 bg-red-950/10" : "border-amber-900/50 bg-amber-950/10"
       )}
-      style={{ animationDelay: `${index * 50}ms`, animationFillMode: "both" }}
     >
       <div className="flex items-start justify-between mb-4 gap-4">
         <div className="flex flex-col gap-1.5">
@@ -64,6 +67,6 @@ export function RuleCard({ rule, onFocusDefect, index }: RuleCardProps) {
           )}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
