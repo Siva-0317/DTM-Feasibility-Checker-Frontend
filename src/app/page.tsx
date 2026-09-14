@@ -39,8 +39,8 @@ export default function Home() {
   const isStateComplete = job?.status === "COMPLETE";
 
   useEffect(() => {
-    if (job?.result) {
-      setDefects(job.result.rules);
+    if (job?.result?.dtm_report) {
+      setDefects(job.result.dtm_report.rules);
     } else {
       clearViewer();
     }
@@ -66,8 +66,9 @@ export default function Home() {
       const report = await getRemediationReport(jobId);
       setAiReport(report);
     } catch (err: any) {
-      console.error("Failed to fetch AI report", err);
-      setErrorMsg(err.message || "Failed to generate AI report");
+      // FastAPI returns errors in { detail: "string" } format
+      const detail = err.response?.data?.detail;
+      setErrorMsg(detail || err?.message || "Failed to generate AI report");
     } finally {
       setIsGeneratingAI(false);
     }
@@ -163,7 +164,7 @@ export default function Home() {
           )}
 
           {/* STATE 3 - Complete */}
-          {isStateComplete && job?.result && (
+          {isStateComplete && job?.result?.dtm_report && (
             <motion.div 
               key="complete"
               initial={{ opacity: 0, y: 20 }}
@@ -192,7 +193,7 @@ export default function Home() {
                     <DrawerContent className="h-[85vh] bg-[#0d0d14] border-zinc-800 flex flex-col p-0">
                       <div className="flex-1 overflow-y-auto px-4 pb-10 mt-6">
                         <DTMReport 
-                          report={job.result} 
+                          report={job.result.dtm_report} 
                           onFocusDefect={handleFocusDefect} 
                           onRequestAI={handleRequestAI}
                           isLoadingAI={isGeneratingAI}
@@ -208,7 +209,7 @@ export default function Home() {
               
               <div className="hidden md:flex md:col-span-1 lg:col-span-5 flex-col pb-20">
                 <DTMReport 
-                  report={job.result} 
+                  report={job.result.dtm_report} 
                   onFocusDefect={handleFocusDefect} 
                   onRequestAI={handleRequestAI}
                   isLoadingAI={isGeneratingAI}

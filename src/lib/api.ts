@@ -3,7 +3,7 @@ import { Job, RemediationReport, UploadResponse } from "./types";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
-  timeout: 30000,
+  timeout: 300000, // 5 minutes to accommodate large CAD uploads and LLM generation
   headers: {
     "Content-Type": "application/json",
   },

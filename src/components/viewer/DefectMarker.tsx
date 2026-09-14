@@ -30,7 +30,7 @@ export function DefectMarker({ position, ruleId, ruleName, isSelected, onClick }
   return (
     <group position={position} onClick={(e) => { e.stopPropagation(); onClick(); }}>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[8, 32, 32]} />
+        <sphereGeometry args={[5, 32, 32]} />
         <meshBasicMaterial color={color} />
       </mesh>
       

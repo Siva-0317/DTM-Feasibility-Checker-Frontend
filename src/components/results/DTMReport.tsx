@@ -15,7 +15,8 @@ interface DTMReportProps {
 
 export function DTMReport({ report, onFocusDefect, onRequestAI, isLoadingAI }: DTMReportProps) {
   const isPass = report.overall_status === "PASS";
-  const failedRules = report.rules.filter(r => r.status === "FAIL" || r.status === "WARN");
+  const rules = report.rules || [];
+  const failedRules = rules.filter(r => r.status === "FAIL" || r.status === "WARN");
 
   return (
     <div className="flex flex-col h-full bg-[#0d0d14] rounded-xl border border-zinc-800 shadow-xl overflow-hidden animate-in fade-in duration-500">
@@ -40,11 +41,11 @@ export function DTMReport({ report, onFocusDefect, onRequestAI, isLoadingAI }: D
           <div className="flex-1 h-2.5 bg-zinc-800 rounded-full overflow-hidden shadow-inner">
             <div 
               className={cn("h-full transition-all duration-1000 ease-out", isPass ? "bg-green-500" : "bg-red-500")} 
-              style={{ width: `${(report.pass_count / report.rules.length) * 100}%` }}
+              style={{ width: `${(report.pass_count / Math.max(1, rules.length)) * 100}%` }}
             />
           </div>
           <span className="text-sm font-bold tracking-wide text-zinc-300 whitespace-nowrap">
-            {report.pass_count} / {report.rules.length} Passed
+            {report.pass_count} / {rules.length} Passed
           </span>
         </div>
       </div>
@@ -53,7 +54,7 @@ export function DTMReport({ report, onFocusDefect, onRequestAI, isLoadingAI }: D
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="w-full mb-6 bg-zinc-900/70 border border-zinc-800 h-12 p-1">
             <TabsTrigger value="all" className="flex-1 h-full rounded-md font-medium text-sm data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100">
-              DTM Rules ({report.rules.length})
+              DTM Rules ({rules.length})
             </TabsTrigger>
             <TabsTrigger value="failures" className="flex-1 h-full rounded-md font-medium text-sm data-[state=active]:bg-zinc-800 data-[state=active]:text-red-400">
               Failures Only ({failedRules.length})
@@ -62,7 +63,7 @@ export function DTMReport({ report, onFocusDefect, onRequestAI, isLoadingAI }: D
           
           <TabsContent value="all" className="mt-0 outline-none">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-              {report.rules.map((rule, idx) => (
+              {rules.map((rule, idx) => (
                 <RuleCard 
                   key={rule.rule_id} 
                   rule={rule} 

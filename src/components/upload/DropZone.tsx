@@ -53,8 +53,8 @@ export function DropZone({ onUploadComplete, onError }: DropZoneProps) {
       return;
     }
 
-    if (file.size > 200 * 1024 * 1024) {
-      onError("File is too large. Maximum size is 200MB.");
+    if (file.size > 1024 * 1024 * 1024) {
+      onError("File is too large. Maximum size is 1GB.");
       return;
     }
 
@@ -136,7 +136,7 @@ export function DropZone({ onUploadComplete, onError }: DropZoneProps) {
           Drop your STEP file here
         </h3>
         <p className="text-sm text-zinc-400 text-center mb-8 max-w-sm">
-          Supports .stp and .step files &middot; Max 200MB
+          Supports .stp and .step files &middot; Max 1GB
         </p>
 
         <div className="absolute bottom-4 flex items-center gap-2 text-xs font-medium text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full">

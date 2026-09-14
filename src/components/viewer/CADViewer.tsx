@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useMemo, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Html } from "@react-three/drei";
+import { OrbitControls, useGLTF, Html, Center } from "@react-three/drei";
 import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Loader2 } from "lucide-react";
@@ -32,14 +32,6 @@ function DoorModel({ url, onLoaded, isWireframe }: { url: string; onLoaded: () =
   useEffect(() => {
     if (!scene) return;
     
-    // Center the model inside a bounding box
-    const box = new THREE.Box3().setFromObject(scene);
-    const center = box.getCenter(new THREE.Vector3());
-    
-    scene.position.x = -center.x;
-    scene.position.y = -center.y;
-    scene.position.z = -center.z;
-    
     scene.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material = material;
@@ -50,12 +42,6 @@ function DoorModel({ url, onLoaded, isWireframe }: { url: string; onLoaded: () =
     
     onLoaded();
   }, [scene, material, onLoaded]);
-
-  useFrame(() => {
-    if (meshRef.current && !isInteracting) {
-      meshRef.current.rotation.y += 0.001; // subtle rotation
-    }
-  });
 
   return (
     <group 
@@ -135,7 +121,7 @@ export function CADViewer({ glbUrl, defects, onModelLoaded, focusTarget }: CADVi
       className="relative w-full h-full bg-[#0d0d14] rounded-xl overflow-hidden border border-zinc-800 shadow-xl"
     >
       <Canvas
-        camera={{ position: [0, 0, 500], fov: 45 }}
+        camera={{ position: [0, 0, 2000], far: 10000, fov: 45 }}
         gl={{ antialias: true }}
         dpr={[1, 2]}
       >
@@ -147,30 +133,32 @@ export function CADViewer({ glbUrl, defects, onModelLoaded, focusTarget }: CADVi
 
         <gridHelper args={[2000, 20, "#1a1a2e", "#1a1a2e"]} />
         
-        <Suspense fallback={
-          <Html center>
-            <div className="flex flex-col items-center gap-3 text-zinc-400 bg-zinc-950/80 p-5 rounded-xl border border-zinc-800 backdrop-blur-sm shadow-xl">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <span className="text-sm font-medium tracking-wide">Loading 3D Model...</span>
-            </div>
-          </Html>
-        }>
-          {glbUrl && <DoorModel url={glbUrl} onLoaded={onModelLoaded} isWireframe={isWireframe} />}
-        </Suspense>
+        <Center>
+          <Suspense fallback={
+            <Html center>
+              <div className="flex flex-col items-center gap-3 text-zinc-400 bg-zinc-950/80 p-5 rounded-xl border border-zinc-800 backdrop-blur-sm shadow-xl">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <span className="text-sm font-medium tracking-wide">Loading 3D Model...</span>
+              </div>
+            </Html>
+          }>
+            {glbUrl && <DoorModel url={glbUrl} onLoaded={onModelLoaded} isWireframe={isWireframe} />}
+          </Suspense>
 
-        {defects.map((defect, idx) => (
-          <DefectMarker
-            key={idx}
-            position={defect.position}
-            ruleId={defect.ruleId}
-            ruleName={defect.ruleName}
-            isSelected={selectedDefectIdx === idx}
-            onClick={() => {
-              setSelectedDefectIdx(idx);
-              setLocalFocusTarget(defect.position);
-            }}
-          />
-        ))}
+          {defects.map((defect, idx) => (
+            <DefectMarker
+              key={idx}
+              position={defect.position}
+              ruleId={defect.ruleId}
+              ruleName={defect.ruleName}
+              isSelected={selectedDefectIdx === idx}
+              onClick={() => {
+                setSelectedDefectIdx(idx);
+                setLocalFocusTarget(defect.position);
+              }}
+            />
+          ))}
+        </Center>
 
         <OrbitControls
           ref={controlsRef}

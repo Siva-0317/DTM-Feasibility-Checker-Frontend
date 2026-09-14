@@ -20,20 +20,22 @@ export function useCADViewer() {
     setSelectedDefect(null);
   }, []);
 
-  const setDefects = useCallback((rules: DTMRuleResult[]) => {
+  const setDefects = useCallback((rules?: DTMRuleResult[]) => {
     const coords: DefectCoordinate[] = [];
     
-    rules.forEach((rule) => {
-      if (rule.status === "FAIL" && rule.defect_coordinates) {
-        rule.defect_coordinates.forEach((position) => {
-          coords.push({
-            position,
-            ruleId: rule.rule_id,
-            ruleName: rule.rule_name,
+    if (rules && Array.isArray(rules)) {
+      rules.forEach((rule) => {
+        if (rule.status === "FAIL" && rule.defect_coordinates) {
+          rule.defect_coordinates.forEach((position) => {
+            coords.push({
+              position,
+              ruleId: rule.rule_id,
+              ruleName: rule.rule_name,
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
     
     setDefectCoordinates(coords);
   }, []);

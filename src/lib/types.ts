@@ -29,7 +29,9 @@ export interface Job {
   status: JobStatus;
   created_at: string;
   updated_at: string;
-  result?: DTMReport;
+  result?: {
+    dtm_report: DTMReport;
+  };
 }
 
 export interface UploadResponse {
@@ -41,6 +43,6 @@ export interface UploadResponse {
 export interface RemediationReport {
   job_id: string;
   ai_advice: string;
-  failed_rules_summary: string[];
+  failed_rules_summary: any[];
   generated_at: string;
 }
