@@ -19,7 +19,7 @@ export function DTMReport({ report, onFocusDefect, onRequestAI, isLoadingAI }: D
   const failedRules = rules.filter(r => r.status === "FAIL" || r.status === "WARN");
 
   return (
-    <div className="flex flex-col h-full bg-[#0d0d14] rounded-xl border border-zinc-800 shadow-xl overflow-hidden animate-in fade-in duration-500">
+    <div className="flex flex-col bg-[#0d0d14] rounded-xl border border-zinc-800 shadow-xl overflow-hidden animate-in fade-in duration-500">
       {/* Top summary bar */}
       <div className="p-6 border-b border-zinc-800 bg-zinc-900/40 backdrop-blur-md">
         <div className="flex justify-between items-start mb-5">
@@ -50,7 +50,7 @@ export function DTMReport({ report, onFocusDefect, onRequestAI, isLoadingAI }: D
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+      <div className="p-6">
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="w-full mb-6 bg-zinc-900/70 border border-zinc-800 h-12 p-1">
             <TabsTrigger value="all" className="flex-1 h-full rounded-md font-medium text-sm data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100">
